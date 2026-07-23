@@ -1,0 +1,123 @@
+# integrations.yaml — Platform & Service Config
+#
+# Set during /setup. Read by /planning, /goal, and any skill that calls external services.
+# Never edit MCP server IDs manually — set them during onboarding by following the
+# setup docs in System/Setup/google-setup.md or System/Setup/microsoft-setup.md.
+#
+# Platform options: google | microsoft
+# Skills that read this file branch on platform to call the correct MCP tools.
+
+platform: google  # google | microsoft
+
+# ── Services ──────────────────────────────────────────────────────────────────
+# enabled: whether the skill should attempt to use this service
+# provider: which backend handles it (auto-set from platform during /setup)
+# mcp_server: the MCP server ID Claude Code uses for this service
+# mcp_tool_prefix: prefix of the MCP tool names (e.g. mcp__<server>__list_events)
+
+services:
+
+  calendar:
+    enabled: true
+    provider: google_calendar        # google_calendar | microsoft_m365
+    mcp_server:                      # set during /setup — e.g. "4000467c-27f5-49ff-..."
+    mcp_tool_prefix: mcp__<server>__
+    notes: >
+      Google: Google Calendar MCP. Tools: list_events, create_event, update_event, delete_event.
+      Microsoft: Microsoft 365 Connector. Tools vary — see System/Setup/microsoft-setup.md.
+
+  email:
+    enabled: true
+    provider: gmail                  # gmail | microsoft_m365
+    mcp_server:                      # set during /setup
+    mcp_tool_prefix: mcp__<server>__
+    notes: >
+      Google: Gmail MCP. Tools: search_threads, get_thread, create_draft, send_gmail_message.
+      Microsoft: Microsoft 365 Connector. Tools vary — see System/Setup/microsoft-setup.md.
+
+  files:
+    enabled: true
+    provider: google_drive           # google_drive | microsoft_m365
+    mcp_server:                      # set during /setup
+    mcp_tool_prefix: mcp__<server>__
+    notes: >
+      Google: Google Drive MCP. Tools: search_files, read_file_content, create_file, upload_file.
+      Microsoft: SharePoint via M365 Connector.
+
+  slack:
+    enabled: false
+    workspace_id:                    # e.g. T01ABCDEF
+    mcp_server:                      # set if Slack is connected
+    mcp_tool_prefix: mcp__<server>__
+    notes: Optional. Enable if client uses Slack for team communication.
+
+  web_search:
+    enabled: true
+    notes: Handled natively by Claude — no MCP server required.
+
+# ── Module: Communications Hub ───────────────────────────────────────────────
+# Requires at least one channel enabled. Email minimum.
+# LinkedIn requires Make.com + Apify — see Deployment_Guide.md for setup.
+
+comms_hub:
+  enabled: false
+
+  channels:
+
+    email:
+      enabled: false
+      # Platform-matched to services.email.provider above — no separate MCP needed.
+      # Enable this when services.email is connected and client uses /comms-triage.
+
+    slack:
+      enabled: false
+      mcp_server:                   # set if Slack MCP is connected
+      channel_whitelist: []         # list channel names to include; empty = DMs only
+      # Example: ["general", "deals", "client-updates"]
+
+    teams:
+      enabled: false
+      # Covered by services.email M365 Connector when platform is microsoft.
+      # No additional MCP needed — enable this when M365 is connected.
+
+    linkedin:
+      enabled: false
+      method: apify                 # only supported method
+      queue_file: Brain/Comms/LinkedIn_Queue.md
+      # Setup: see Deployment_Guide.md → Module: Communications Hub (LinkedIn DMs)
+      # Requires: Apify account + Make.com scenario running on client's machine
+
+  default_filter: unread            # unread | flagged | last_24h
+
+# ── Inbox Folder ─────────────────────────────────────────────────────────────
+# Anything dropped here gets pulled into Brain/Inbox.md automatically.
+# Set during /setup from the tech stack interview.
+
+inbox_folder:
+  name: "AI Inbox"        # folder name in their drive
+  drive: google_drive     # google_drive | onedrive | icloud | dropbox
+  local_path: ""          # full local path — e.g. /Users/name/Google Drive/My Drive/AI Inbox
+
+# ── Daily Digest ─────────────────────────────────────────────────────────────
+# Set during /setup from the tech stack interview. Read by daily-digest-agent and /Let's-Go.
+
+digest:
+  time: "7:30 AM"           # preferred delivery time — e.g. "7:00 AM", "8:30 AM"
+  timezone: ""              # IANA timezone — e.g. America/New_York, America/Los_Angeles
+  recipient_email: ""       # where the digest is emailed each morning
+
+# ── Platform Detection Logic (for skill authors) ────────────────────────────
+# Skills that call external services should read this file and branch:
+#
+#   if platform == "google":
+#     use calendar.mcp_server + google MCP tools
+#   elif platform == "microsoft":
+#     use calendar.mcp_server + Microsoft M365 Connector tools
+#
+# If a service is disabled (enabled: false), skip that step gracefully.
+# If mcp_server is empty, warn the client and skip — don't error out.
+#
+# Graceful degradation example (in /planning daily mode):
+#   - If calendar.enabled and mcp_server is set → pull live calendar events
+#   - If calendar.enabled but mcp_server empty → "Calendar not connected yet — add events manually"
+#   - If calendar.enabled == false → skip calendar section entirely
