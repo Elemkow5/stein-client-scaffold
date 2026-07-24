@@ -128,10 +128,13 @@ Create `Personality/[CLIENT_FIRST]_[CLIENT_LAST].md`:
 [2–3 sentences from their role, tenure, and what a great day looks like — their words where possible]
 
 ## My Projects
-[Active projects as a dash list — one per line with one-sentence status]
+[Active projects as a dash list — wikilink each project name to its hub: `- [[ProjectName]] — one-sentence status`]
 
 ## My Priorities
 [Priority names as a bullet list with why each matters]
+
+## Key People
+[Key contacts as a dash list — wikilink each person to their hub: `- [[First Last]] — role, how they connect`]
 
 ## How to Work With Me
 [From working preferences — directness level, what not to do, other notes]
@@ -219,10 +222,11 @@ Create `Goals/Quarterly.md`:
 
 ## Step 8 — Create People Files
 
-For each person named in the interview, create `Brain/People/[FirstName]_[LastName].md`:
+For each person named in the interview, create `Brain/People/[FirstName]_[LastName].md`. Add a wikilink to their Topic hub at the top so Obsidian backlinks connect the People file to the hub:
 
 ```markdown
 # [Full Name]
+[[First Last]]
 
 **Role:** [Role or relationship type]
 **Company:** [Company or context]
@@ -293,10 +297,10 @@ If no commitments were mentioned, skip this step.
 
 ## Step 9 — Seed Brain/Master.md
 
-Open `Brain/Master.md`. Add a project section for each active project:
+Open `Brain/Master.md`. Add a project section for each active project. Use `[[wikilinks]]` on every project name so they link to the Topic hubs created in Step 12:
 
 ```markdown
-## [Project Name]
+## [[ProjectName]]
 *[One-sentence description from the interview]*
 
 ### This Week
