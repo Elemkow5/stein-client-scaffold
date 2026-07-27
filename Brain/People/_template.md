@@ -3,6 +3,7 @@
 **Role:** 
 **Company:** 
 **Relationship type:** <!-- client / partner / vendor / colleague / advisor -->
+**Last contact:** <!-- YYYY-MM-DD — update every time you interact -->
 **How decisions get made:** <!-- their style, who else is involved -->
 
 ---

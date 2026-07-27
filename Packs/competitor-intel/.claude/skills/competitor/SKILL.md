@@ -17,7 +17,9 @@ Monitors competitors' full marketing stack and maintains structured intelligence
 - **Weekly scan** — diffs against existing files, appends Change_Log, updates what changed
 - **Initial profile build** (`--profile`) — deep first pass, writes all files from scratch
 
-**Non-interactive.** Never stop to ask questions. If a source is unavailable or an API key is missing, log it and continue.
+**Non-interactive during weekly scans.** Never stop to ask questions mid-run. If a source is unavailable or an API key is missing, log it and continue.
+
+**One interactive pause during `--profile` builds only** — after people discovery (Step 0.5), present discovered people and ask if anyone should be added before proceeding.
 
 ---
 
@@ -62,6 +64,67 @@ Determine mode:
 - no args → INITIAL_BUILD=false, TARGET=all
 
 Filter competitor list to TARGET. If no match, report and stop.
+
+---
+
+## Step 0.5 — People Discovery (Initial Profile Build Only)
+
+Skip this step for weekly scans.
+
+**Goal:** Auto-discover the company's key people, find their social handles, and confirm the list before the full profile build runs. If tracked_people is already populated in INDEX.md for this competitor, still run discovery — you may surface people who weren't configured.
+
+**1. Discover people from the website:**
+
+WebFetch `[url]/about`, `[url]/team`, `[url]/about-us`, `[url]/who-we-are` (try each, skip 404s).
+
+Extract every named person with a visible title. Note: name, title, any social links on the page.
+
+Also WebFetch the company's LinkedIn page if findable:
+```
+WebSearch: [company name] site:linkedin.com/company
+```
+Fetch the LinkedIn page and extract listed employees/leadership if visible.
+
+**2. Find social handles for each discovered person:**
+
+For each person found, WebSearch:
+```
+"[Full Name]" [company name] LinkedIn
+"[Full Name]" [company name] Twitter OR X
+"[Full Name]" [company name] YouTube
+```
+
+Extract:
+- LinkedIn URL
+- X handle
+- YouTube channel (personal, if any)
+
+**3. Surface findings and ask:**
+
+Present the discovered list:
+
+```
+People found for [Company Name]:
+
+1. [Name] — [Title]
+   LinkedIn: [url or "not found"]
+   X: [@handle or "not found"]
+   YouTube: [handle or "not found"]
+
+2. [Name] — [Title]
+   ...
+
+Is there anyone else you want included in the analysis?
+(Reply with names, or "no" / "looks good" to proceed)
+```
+
+Wait for response. Add any names the user provides — WebSearch for their handles using the same pattern above.
+
+**4. Write back to INDEX.md:**
+
+Update the `tracked_people` block for this competitor in INDEX.md with the complete confirmed list. This becomes the permanent config for all future weekly scans.
+
+Then continue to Step 1.
 
 ---
 

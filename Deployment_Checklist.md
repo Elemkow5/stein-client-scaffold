@@ -121,7 +121,7 @@ This is curriculum, not support. The client gets smarter every week.
 
 Send after Session 1:
 
-> "Your system is live at localhost:7272. It will open automatically every time you log in. To start each day: open Claude Code in your [Name] folder, type `/planning`, and you're off. Your daily briefing will land in your email each morning at [time]. Let me know if anything feels off this week."
+> "Your system is live at localhost:7272. It will open automatically every time you log in. To start each day: open Claude Code in your [Name] folder, type `/checkin`, and you're off. Your daily briefing will land in your email each morning at [time]. Let me know if anything feels off this week."
 
 ---
 
