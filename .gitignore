@@ -1,0 +1,9 @@
+# Client-specific files — never committed to the shared scaffold repo
+Personality/
+Brain/
+Goals/
+System/integrations.yaml
+System/.setup_progress
+System/Logs/
+System/Scheduled_Flows.md
+Dashboards/data/
