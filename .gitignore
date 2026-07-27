@@ -7,3 +7,7 @@ System/.setup_progress
 System/Logs/
 System/Scheduled_Flows.md
 Dashboards/data/
+
+# Catch-all for any runtime files written during normal operation
+*.log
+*.tmp
