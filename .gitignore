@@ -11,3 +11,7 @@ Dashboards/data/
 # Catch-all for any runtime files written during normal operation
 *.log
 *.tmp
+
+# Mac and Obsidian system files
+.DS_Store
+.obsidian/
