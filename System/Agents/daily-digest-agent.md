@@ -107,6 +107,83 @@ For any other service with `enabled: true` and a valid `mcp_server` not covered 
 
 ---
 
+## Step 4b — Contact Discovery
+
+Runs after email processing in Step 4. Identifies new contacts emerging from the client's inbox who don't yet have a People file — and creates stubs automatically when they cross a frequency threshold.
+
+**How it works:**
+
+From the email threads processed in Step 4, collect all sender names and email addresses where no matching file exists in `Brain/People/`.
+
+Filter out noise using the same rules as `/seed`:
+- Addresses or display names containing: `no-reply`, `noreply`, `newsletter`, `notifications`, `donotreply`, `support@`, `hello@`, `info@`, `billing@`, `admin@`, `mailer`, `unsubscribe`, `mailchimp`, `sendgrid`, `hubspot`, `linkedin`, `twitter`, `facebook`
+
+For each remaining unrecognized sender:
+
+1. Read `Brain/People/_candidates.md` (create it if it doesn't exist — see format below)
+2. Find or create an entry for this sender
+3. Increment their appearance count by 1
+4. If count reaches **3**: create a People stub and remove them from the candidates file
+
+**`Brain/People/_candidates.md` format:**
+```markdown
+# Contact Candidates
+*Unrecognized contacts building toward the threshold for auto-stub creation.*
+*Managed automatically by the daily digest agent — do not edit manually.*
+
+| Name | Email | First Seen | Count | Last Seen |
+|---|---|---|---|---|
+| [Name] | [email] | [YYYY-MM-DD] | [N] | [YYYY-MM-DD] |
+```
+
+**When count reaches 3 — create the People stub:**
+
+Create `Brain/People/[FirstName]_[LastName].md`:
+
+```markdown
+# [Full Name]
+**Role:** (not captured — discovered by daily digest)
+**Company:** [if inferable from email domain or signature]
+**Email:** [email address]
+**Relationship type:** (to fill in)
+**Discovered by:** daily digest on [YYYY-MM-DD] — not yet reviewed
+
+---
+
+## Last Interaction
+*Date:* [most recent email date]
+*Channel:* Email — "[Subject]"
+*Summary:* [1-line summary of most recent thread]
+*Open:* (none identified)
+
+---
+
+## Interaction History
+- [YYYY-MM-DD] Email — "[Subject]"
+- [first-seen date] Email — first contact
+
+---
+
+## Notes
+(to fill in)
+
+---
+
+## Open Items
+- [ ]
+
+---
+
+## Open Commitments
+<!-- Format: - [ ] [Due YYYY-MM-DD] What — made YYYY-MM-DD -->
+```
+
+Then remove this person from `_candidates.md`.
+
+**Silent operation:** This step runs with no output — no mention in the digest. New People files are simply there the next time the client runs `/recall` or `/daily`. The `_candidates.md` file is the only trace of work in progress.
+
+---
+
 ## Step 5 — Build the Digest
 
 Assemble the digest in this order. Omit any section whose source was skipped (no header, no placeholder).
