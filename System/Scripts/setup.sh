@@ -53,10 +53,12 @@ case "$LOCATION_CHOICE" in
     ;;
   2)
     # Find Google Drive mount point
+    # Resolve the glob first — an unquoted glob inside [ -d ] errors out when it
+    # matches zero or several accounts instead of falling through to the prompt.
+    GDRIVE="$(ls -d "$HOME/Library/CloudStorage/GoogleDrive-"*/"My Drive" 2>/dev/null | head -1)"
     if [ -d "$HOME/Google Drive/My Drive" ]; then
       VAULT_DIR="$HOME/Google Drive/My Drive/${CLIENT_NAME}_AI"
-    elif [ -d "$HOME/Library/CloudStorage/GoogleDrive-"*/My\ Drive ]; then
-      GDRIVE=$(ls -d "$HOME/Library/CloudStorage/GoogleDrive-"*/My\ Drive 2>/dev/null | head -1)
+    elif [ -n "$GDRIVE" ] && [ -d "$GDRIVE" ]; then
       VAULT_DIR="${GDRIVE}/${CLIENT_NAME}_AI"
     else
       warn "Google Drive not found at expected path."
@@ -77,9 +79,13 @@ log "Vault path: $VAULT_DIR"
 # ── Check Node.js ─────────────────────────────────────────────────────────────
 
 header "3. Checking Dependencies"
-if command -v node &>/dev/null; then
-  NODE_VER=$(node --version)
-  ok "Node.js $NODE_VER"
+# Resolve the real node path and USE it. Do not hardcode — Intel Macs put node
+# at /usr/local/bin, Apple Silicon at /opt/homebrew/bin. Hardcoding /usr/local
+# is why the LaunchAgents silently failed to start on every M-series machine.
+NODE_BIN="$(command -v node || true)"
+if [ -n "$NODE_BIN" ]; then
+  NODE_VER=$("$NODE_BIN" --version)
+  ok "Node.js $NODE_VER  ($NODE_BIN)"
 else
   error "Node.js not found. Install from https://nodejs.org (LTS version) and re-run this script."
 fi
@@ -107,11 +113,18 @@ fi
 cp -r "$SCAFFOLD_ROOT" "$VAULT_DIR"
 ok "Scaffold copied to $VAULT_DIR"
 
+# ── Install the blank vault forms ─────────────────────────────────────────────
+# The repo tracks blank templates in _skeleton/ and gitignores the live vault,
+# so client data never lands in the shared repo. This puts the forms in place.
+
+header "5. Installing Vault Skeleton"
+bash "$VAULT_DIR/System/Scripts/install-skeleton.sh" "$VAULT_DIR"
+
 # ── Start dashboard ───────────────────────────────────────────────────────────
 
-header "5. Starting Dashboard"
+header "6. Starting Dashboard"
 DASHBOARD_DIR="$VAULT_DIR/Dashboards"
-node "$DASHBOARD_DIR/server.js" &
+"$NODE_BIN" "$DASHBOARD_DIR/server.js" &
 DASHBOARD_PID=$!
 sleep 1
 
@@ -123,7 +136,7 @@ fi
 
 # ── Install auto-start (Mac only) ─────────────────────────────────────────────
 
-header "6. Auto-start on Login"
+header "7. Auto-start on Login"
 if [[ "$OSTYPE" == "darwin"* ]]; then
   LAUNCH_AGENTS_DIR="$HOME/Library/LaunchAgents"
   mkdir -p "$LAUNCH_AGENTS_DIR"
@@ -141,7 +154,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   <string>com.stein.${CLIENT_NAME}.dashboard</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/node</string>
+    <string>${NODE_BIN}</string>
     <string>${VAULT_DIR}/Dashboards/server.js</string>
   </array>
   <key>WorkingDirectory</key>
@@ -169,7 +182,7 @@ EOF
   <string>com.stein.${CLIENT_NAME}.inbox-watcher</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/node</string>
+    <string>${NODE_BIN}</string>
     <string>${VAULT_DIR}/System/Scripts/inbox-watcher.js</string>
   </array>
   <key>WorkingDirectory</key>
@@ -201,7 +214,7 @@ fi
 
 # ── Open Obsidian ─────────────────────────────────────────────────────────────
 
-header "7. Open in Obsidian"
+header "8. Open in Obsidian"
 if [[ "$OSTYPE" == "darwin"* ]]; then
   log "Opening Obsidian..."
   open -a Obsidian "$VAULT_DIR" 2>/dev/null || warn "Couldn't open Obsidian automatically — open it manually and point it to $VAULT_DIR"

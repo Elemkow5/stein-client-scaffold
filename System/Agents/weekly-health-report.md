@@ -61,7 +61,7 @@ Flag if:
 Count new files created this week across:
 - `Brain/People/` — new people files
 - `Brain/Projects/` — new project files or subfolders
-- `Brain/Goals/` — new or updated goals
+- `Goals/` — new or updated goals
 - `Brain/Topics/` — new hub pages
 
 Report counts. Flag if People count grew (signals active relationship tracking) or if no new files created anywhere (signals low engagement).

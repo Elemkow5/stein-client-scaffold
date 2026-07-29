@@ -58,7 +58,7 @@ Run `/setup` with the client. Have them complete `Onboarding_Questionnaire.md` b
 - Create People pages for their key contacts
 - Seed Master.md with their active projects
 - Configure integrations for their platform
-- Run `/daily` as the closing moment — their first morning brief
+- Run `/checkin` as the closing moment — their first morning brief
 
 ---
 
@@ -66,5 +66,5 @@ Run `/setup` with the client. Have them complete `Onboarding_Questionnaire.md` b
 
 1. Open browser → `localhost:7272` — master dashboard
 2. Click Daily Brief — see today's meetings, priorities, tasks
-3. Open Claude Code when they need to do something (capture, plan, search, wrap)
+3. Open Claude Code and run `/checkin` — the one habit. Everything else (`/capture`, `/recall`, `/wrap`) comes naturally.
 4. Everything Claude Code writes shows up in the dashboards automatically

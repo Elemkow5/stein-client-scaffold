@@ -18,7 +18,7 @@ const P = {
   master:       path.join(VAULT, 'Brain/Master.md'),
   inbox:        path.join(VAULT, 'Brain/Inbox.md'),
   projects:     path.join(VAULT, 'Brain/Projects'),
-  goals:        path.join(VAULT, 'Brain/Goals'),
+  goals:        path.join(VAULT, 'Goals'),
   people:       path.join(VAULT, 'Brain/People'),
   knowledge:    path.join(VAULT, 'Brain/Knowledge'),
   skills:       path.join(VAULT, '.claude/skills'),
@@ -673,7 +673,7 @@ function handleLibrarySkills(req, res) {
   const defs = [
     { name: '/capture',  when: 'You have a thought or task mid-session.',     how: '/capture [what]',   does: 'Adds it instantly to Brain/Inbox.md — no friction.' },
     { name: '/inbox',    when: 'Ready to process what\'s accumulated.',        how: '/inbox',            does: 'Works through Inbox.md one item at a time, filing each.' },
-    { name: '/planning', when: 'Start of a day, week, or quarter.',           how: '/planning',         does: 'Daily: calendar + priorities. Weekly: goals + top 3. Quarterly: full review.' },
+    { name: '/checkin',  when: 'Start of a day, week, or quarter.',           how: '/checkin',          does: 'Daily: calendar + priorities. Weekly: goals + top 3. Quarterly: full review.' },
     { name: '/daily',    when: 'Morning planning session.',                    how: '/daily',            does: 'Calendar, emails, priorities, tasks — the one thing that matters today.' },
     { name: '/wrap',     when: 'End of a session or day.',                     how: '/wrap',             does: 'Logs what got done, captures next steps, checks commitments.' },
     { name: '/recall',   when: 'You want to find something.',                  how: '/recall [topic]',   does: 'Searches Brain/, Goals/, Personality/. Returns ranked matches.' },

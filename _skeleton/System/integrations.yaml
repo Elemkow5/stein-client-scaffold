@@ -1,8 +1,17 @@
 # integrations.yaml — Platform & Service Config
 #
-# Set during /setup. Read by /planning, /goal, and any skill that calls external services.
-# Never edit MCP server IDs manually — set them during onboarding by following the
-# setup docs in System/Setup/google-setup.md or System/Setup/microsoft-setup.md.
+# Set during /setup. Read by /checkin, /goal, /lets-go, /comms-triage,
+# /stein-doctor, /seed, /setup-transcript, the daily digest agent, the weekly
+# health report, inbox-watcher.js, and the dashboard.
+#
+# ⚠️ THE SHAPE OF THIS FILE IS A CONTRACT.
+# Eleven consumers read `services.*`, `comms_hub.*`, `inbox_folder.*` and
+# `digest.*` by path. /setup Step 9 must WRITE this same shape — if you change
+# a key here, change it there, and grep the skills before you do.
+# The `stack:` block at the bottom is inventory only; nothing branches on it.
+#
+# Never edit MCP server IDs manually — set them during onboarding by following
+# System/Setup/google-setup.md or System/Setup/microsoft-setup.md.
 #
 # Platform options: google | microsoft
 # Skills that read this file branch on platform to call the correct MCP tools.
@@ -121,3 +130,63 @@ digest:
 #   - If calendar.enabled and mcp_server is set → pull live calendar events
 #   - If calendar.enabled but mcp_server empty → "Calendar not connected yet — add events manually"
 #   - If calendar.enabled == false → skip calendar section entirely
+
+# ── Tech Stack Inventory ─────────────────────────────────────────────────────
+# Captured during the /setup tech-stack interview. Inventory only — no skill
+# branches on these. It exists so the system knows what the client actually
+# uses when drafting, planning, or suggesting automations, and so Andrew can
+# see connection opportunities at a glance.
+#
+# Use `none` where they don't use something. Anything they DO use but isn't
+# connected yet should get a follow-up task in Brain/Master.md during /setup.
+
+stack:
+
+  device:
+    computer: mac            # mac | pc | both
+    phone: iphone            # iphone | android
+
+  video:
+    provider: none           # zoom | google_meet | teams | webex | other | none
+    async_video: none        # loom | vidyard | none
+
+  messaging:
+    provider: none           # slack | teams | discord | none
+    informal_channels: []    # whatsapp/imessage threads that are really work
+
+  project_management:
+    provider: none           # notion | asana | monday | clickup | trello | linear | todoist | spreadsheet | none
+
+  crm:
+    provider: none           # hubspot | salesforce | pipedrive | gohighlevel | zoho | close | none
+  sales_tools: []            # apollo | instantly | lemlist | linkedin_sales_nav
+
+  email_marketing:
+    provider: none           # mailchimp | activecampaign | kit | klaviyo | beehiiv | substack | none
+  seo_tools: []              # semrush | ahrefs | google_search_console
+
+  social:
+    platforms: []            # linkedin | twitter_x | instagram | facebook | tiktok | youtube
+    scheduler: none          # buffer | hootsuite | later | publer | postiz | native | none
+
+  design:
+    tools: []                # canva | figma | adobe_photoshop | adobe_illustrator | adobe_premiere
+
+  website:
+    platform: none           # wordpress | webflow | squarespace | wix | shopify | custom | none
+    analytics: none          # google_analytics | plausible | none
+
+  accounting:
+    provider: none           # quickbooks | xero | freshbooks | wave | spreadsheets | none
+  payments:
+    provider: none           # stripe | paypal | square | ach | invoicing | none
+
+  scheduling:
+    provider: none           # calendly | acuity | tidycal | email | none
+
+  automation:
+    tools: []                # zapier | make | n8n
+
+  ai_tools: []               # chatgpt | claude | gemini | perplexity | midjourney
+
+  other_tools: []            # anything else worth knowing about

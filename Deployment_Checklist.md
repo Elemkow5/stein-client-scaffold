@@ -63,7 +63,7 @@ The live interview. Takes 30–45 minutes. Claude asks questions conversationall
 - `Personality/Priorities.yaml`
 - `Brain/Master.md`
 - `Brain/People/*.md` (key contacts)
-- `Brain/Goals/*.md` (3-year, annual, quarterly placeholders)
+- `Goals/*.md` (annual, quarterly, weekly placeholders)
 - `System/integrations.yaml` (platform, tools, digest time, inbox folder)
 
 You don't need to facilitate — Claude drives it. Your job is to be present, build rapport, and answer any "why" questions the client has.
