@@ -63,17 +63,24 @@ Use the platform-matched MCP:
 - Google: `mcp__[email.mcp_server]__search_threads` — query: `after:YESTERDAY is:unread OR is:starred`
 - Microsoft: equivalent M365 tool
 
-Pull emails from the last 24 hours. For each thread:
-1. Check if sender has a file in `Brain/People/`. Match by name or email address.
-2. If a People file exists — append a dated entry silently (do not surface this in the digest output):
-   ```
-   ## [YYYY-MM-DD] Email
-   **Subject:** [subject]
-   **Summary:** [1-2 sentences]
-   **Action needed:** [yes — what / no]
-   ```
-3. Surface in digest: sender, subject, 1-line summary, flag if action needed.
-4. Limit: top 8 threads by recency. If more than 8, note "and [N] more" at the end.
+Pull emails from the last 24 hours. For each thread, run filters in this order:
+
+**Filter 1 — Noise check (always first).** Eliminate any sender address or display name containing: `no-reply`, `noreply`, `newsletter`, `notifications`, `donotreply`, `support@`, `hello@`, `info@`, `billing@`, `admin@`, `mailer`, `unsubscribe`, `mailchimp`, `sendgrid`, `hubspot`, `linkedin`, `twitter`, `facebook`. If matched → skip this thread entirely.
+
+**Filter 2 — Sender depth check.** Check if sender has a file in `Brain/People/`. Match by name or email address.
+- **Known sender** → full enrichment: update People file + run signal scan (Steps 4c and 4d)
+- **Unknown sender** → run signal scan only (Step 4c). Do not update a People file. Contact discovery still runs (Step 4b).
+
+**If sender is known — update People file silently** (do not surface in digest output):
+```
+## [YYYY-MM-DD] Email
+**Subject:** [subject]
+**Summary:** [1-2 sentences]
+**Action needed:** [yes — what / no]
+```
+
+**Surface in digest:** sender, subject, 1-line summary, flag if action needed.
+Limit: top 8 threads by recency. If more than 8, note "and [N] more" at the end.
 
 ### Slack (if active)
 
@@ -104,6 +111,51 @@ Limit: top 5 items. If MCP not available, skip silently.
 ### Other Enabled Services
 
 For any other service with `enabled: true` and a valid `mcp_server` not covered above: pull the most actionable recent activity. One bullet per item. Limit 3 items. Label the section with the service name.
+
+---
+
+## Step 4c — Project Enrichment
+
+Runs after email processing. For every email that passed the noise filter (Step 4 Filter 1), regardless of whether the sender is known:
+
+1. Read all project names from `Brain/Master.md` (section headers under `##`). Ignore names shorter than 4 characters.
+2. Scan the email subject line + first 3 paragraphs of body for an exact match to any project name.
+3. If a match is found:
+   - **Known sender:** Write one line to `## Recent Communications` in that project's section in Master.md. Create the section header if it doesn't exist.
+     ```
+     - [YYYY-MM-DD] [Sender Name] — "[Subject]" — [1-line summary]
+     ```
+   - **Unknown sender:** Add a flagged item to the digest under the Email section:
+     ```
+     ⚠️ [Sender] — [Subject] — mentions [Project Name] — sender not yet in People
+     ```
+4. If no project match found: skip. Do not write anything.
+
+**Never match partial names.** "Agency" does not match "AI Agency." The full project name must appear as written in Master.md.
+
+---
+
+## Step 4d — Commitment Candidates
+
+Runs after Step 4c. For emails from known senders only (sender has a People file):
+
+Scan subject + first 3 paragraphs for commitment language:
+
+**You committed (first-person):** "I'll", "I will send", "I'll get back", "I'll have it", "I owe you", "I'll follow up", "I'll connect you", "will send over", "I'll reach out"
+
+**They committed (inbound):** "I'll send you", "will get that to you", "I'll have it to you by", "will follow up with you", "I'll get back to you", "sending over", "will have it ready"
+
+If commitment language is detected:
+1. Read `Brain/People/_commitment_candidates.md` (create if it doesn't exist)
+2. Append one row:
+
+```markdown
+| [YYYY-MM-DD] | [Sender] | [Subject] | [Commitment detected — verbatim or close paraphrase] | [you / them] |
+```
+
+**Do NOT write to `Brain/Commitments.md`.** Client reviews candidates during the next interactive `/daily` session and confirms before anything is persisted.
+
+**Silent operation.** No mention in the digest. The candidate file is the only trace.
 
 ---
 
