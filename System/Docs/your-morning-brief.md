@@ -65,7 +65,9 @@ These are things the system will sometimes get wrong. Not bugs — just the natu
 
 **Missed project mentions.** If someone refers to a project by a nickname, abbreviation, or a slight variation of the name, the system may miss the connection. "Agency" when the project is "AI Agency," for example. These just don't get logged — nothing is written incorrectly.
 
-**Commitment candidates aren't perfect.** When the system detects commitment language in an email ("I'll send you..." / "I'll have it to you by..."), it flags it for your review — it does NOT automatically add it to your commitments list. But it may flag things that aren't real commitments, and it may miss commitments that were worded indirectly. The candidate list is a starting point, not a finished record.
+**Commitment candidates aren't perfect.** When the system detects commitment language in email or Slack ("I'll send you..." / "I'll have it to you by..."), it surfaces them in the brief under "Commitments to Review" — they do NOT go into your commitments list until you confirm via `/commitment`. But it may flag things that aren't real commitments, and it may miss commitments worded indirectly. The candidate list is a starting point, not a finished record.
+
+**Commitments made on calls are invisible to the system.** The agent can only detect commitment language in written channels (email, Slack, calendar descriptions). If you verbally committed to something on a call, it won't appear here. Workaround: run `/capture` or `/wrap` after the meeting and log it manually.
 
 **Unknown sender gaps.** If someone important emails you for the first time, they don't have a People file yet. Their email will still appear in the brief, and if they mentioned a known project, that gets flagged. But no People file gets updated for them until they've appeared 3 times or you create their file manually.
 

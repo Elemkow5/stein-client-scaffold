@@ -137,25 +137,28 @@ Runs after email processing. For every email that passed the noise filter (Step 
 
 ## Step 4d — Commitment Candidates
 
-Runs after Step 4c. For emails from known senders only (sender has a People file):
-
-Scan subject + first 3 paragraphs for commitment language:
+Runs after Step 4c. Scans all active sources — email, Slack, and calendar event descriptions — for commitment language from known senders/participants.
 
 **You committed (first-person):** "I'll", "I will send", "I'll get back", "I'll have it", "I owe you", "I'll follow up", "I'll connect you", "will send over", "I'll reach out"
 
 **They committed (inbound):** "I'll send you", "will get that to you", "I'll have it to you by", "will follow up with you", "I'll get back to you", "sending over", "will have it ready"
 
+**Sources to scan:**
+- **Email:** subject + first 3 paragraphs, known senders only
+- **Slack/Teams:** message content, known senders only
+- **Calendar:** event description text only (not meeting audio — the agent cannot hear calls)
+
 If commitment language is detected:
 1. Read `Brain/People/_commitment_candidates.md` (create if it doesn't exist)
-2. Append one row:
+2. Append one row per detected commitment:
 
 ```markdown
-| [YYYY-MM-DD] | [Sender] | [Subject] | [Commitment detected — verbatim or close paraphrase] | [you / them] |
+| [YYYY-MM-DD] | [Source: Email/Slack/Calendar] | [Person] | [Commitment — verbatim or close paraphrase] | [you / them] |
 ```
 
-**Do NOT write to `Brain/Commitments.md`.** Client reviews candidates during the next interactive `/daily` session and confirms before anything is persisted.
+**Do NOT write to `Brain/Commitments.md`.** Client confirms via `/commitment` after seeing them in the digest.
 
-**Silent operation.** No mention in the digest. The candidate file is the only trace.
+**Note on calendar:** Only commitments written into event descriptions or titles are detectable. Verbal commitments made during a call are not captured here — those require the client to run `/capture` or `/wrap` after the meeting.
 
 ---
 
@@ -246,6 +249,13 @@ Good morning, [Name from Personality/[Name].md].
 🎯 PRIORITIES
 • [Priority 1 name] — [why it matters, from Priorities.yaml]
 • [Priority 2 name] — [why it matters]
+
+⚠️ COMMITMENTS TO REVIEW
+[Only include this section if Brain/People/_commitment_candidates.md has unreviewed entries]
+• [you → Person]: [what was said] — via [Email/Slack/Calendar], [date]
+• [Person → you]: [what was said] — via [Email/Slack/Calendar], [date]
+→ Run /commitment to confirm or dismiss.
+[If no candidates: omit this section entirely — no header, no placeholder]
 
 📅 TODAY — [Weekday, Month Day]
 [HH:MM] — [Calendar event] with [Names]
