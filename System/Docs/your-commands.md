@@ -6,12 +6,18 @@ Everything you can type into Claude Code to work with your system. You don't nee
 
 ## Daily Use
 
-### `/daily`
-Your morning ritual. Run this when you open your laptop.
+### `/checkin`
+Your one ritual. Run this when you open your laptop.
 
-Pulls today's calendar, your open tasks, your priorities, and anything from your inbox. Lets you plan your day interactively — update tasks, flag things, set your focus. Different from the morning email brief: `/daily` is a live conversation, the email is a passive summary.
+It asks whether you want a **daily**, **weekly**, or **quarterly** check-in, then runs the right one. That's the whole point — one command to remember instead of three.
 
-**When to use it:** Every morning, or any time you want a real-time read on your day.
+- **Daily** — today's calendar, your open tasks, your priorities, and what actually matters today. Interactive: update tasks, flag things, set your focus.
+- **Weekly** — reviews open projects, checks priority alignment, surfaces what's gone quiet or is at risk. Good for stepping back and asking whether you're working on the right things.
+- **Quarterly** — full review against your goals, and setting the next quarter's.
+
+Different from the morning email brief: `/checkin` is a live conversation, the email is a passive summary that arrives whether you show up or not.
+
+**When to use it:** Daily every morning. Weekly once a week — Friday or Sunday. Quarterly when a quarter turns.
 
 ---
 
@@ -52,15 +58,6 @@ Logs what happened, syncs any new tasks, updates open items, and closes the sess
 ---
 
 ## Weekly / Less Frequent
-
-### `/checkin`
-Weekly pulse check.
-
-Reviews open projects, checks priority alignment, surfaces things that have gone quiet or are at risk. Good for stepping back from daily execution and asking whether you're working on the right things.
-
-**When to use it:** Once a week, or any time you feel like you've lost the thread.
-
----
 
 ### `/goal`
 Work with a specific goal or priority.
@@ -157,7 +154,7 @@ Tell it what's changed — a project status, a person's role, a priority shift �
 ### `/recall`
 *(Also listed under Daily Use — worth repeating.)*
 
-The most-used command after `/daily`. If you can't find something, try `/recall` before anything else.
+The most-used command after `/checkin`. If you can't find something, try `/recall` before anything else.
 
 ---
 

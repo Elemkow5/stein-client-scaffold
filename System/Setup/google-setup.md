@@ -15,8 +15,8 @@ This guide uses Claude Desktop's built-in Connectors — a UI-based flow requiri
 
 | Service | What it enables |
 |---|---|
-| Google Calendar | /daily pulls today's meetings and attendees |
-| Gmail | Emails from known contacts update People files; /daily surfaces overnight emails from today's attendees |
+| Google Calendar | /checkin pulls today's meetings and attendees |
+| Gmail | Emails from known contacts update People files; /checkin surfaces overnight emails from today's attendees |
 | Google Drive | File search, doc creation, content pipeline (if Module 1 installed) |
 
 ---

@@ -13,8 +13,8 @@ Requires a Microsoft 365 account (Business Basic or higher recommended).
 
 | Service | Via | What it enables |
 |---|---|---|
-| Outlook Calendar | Microsoft 365 MCP Connector | /planning pulls today's events; /goal creates milestone events |
-| Outlook Email | Microsoft 365 MCP Connector | /planning daily mode surfaces flagged emails |
+| Outlook Calendar | Microsoft 365 MCP Connector | /checkin pulls today's events; /goal creates milestone events |
+| Outlook Email | Microsoft 365 MCP Connector | /checkin daily mode surfaces flagged emails |
 | OneDrive / SharePoint | Microsoft 365 MCP Connector | File search and document access |
 
 All three services run through a single Microsoft 365 MCP Connector — one auth flow covers everything.
@@ -108,7 +108,7 @@ services:
 Open Claude Code in the client's vault and run:
 
 ```
-/planning
+/checkin
 > daily
 ```
 

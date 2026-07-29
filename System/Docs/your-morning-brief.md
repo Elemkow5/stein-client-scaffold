@@ -97,4 +97,4 @@ Use it to orient your morning, not as the only thing you trust. If something fee
 
 ---
 
-*Questions about your setup? Run `/daily` in Claude Code for the interactive version, or ask your system operator.*
+*Questions about your setup? Run `/checkin` in Claude Code for the interactive version, or ask your system operator.*

@@ -16,10 +16,10 @@ The working layer. Everything active, in-progress, or recently touched lives her
 
 | File / Folder | What it is |
 |---|---|
-| `Brain/Master.md` | Your task board. Projects, open tasks, this week's focus, backlog. The main thing `/daily` reads and updates. |
+| `Brain/Master.md` | Your task board. Projects, open tasks, this week's focus, backlog. The main thing `/checkin` reads and updates. |
 | `Brain/People/` | One file per person you interact with. Auto-updated by the morning digest. Run `/brief [name]` to pull context before a meeting. |
 | `Brain/People/_candidates.md` | Contacts building toward the threshold for auto-file creation. Managed automatically — you don't need to touch it. |
-| `Brain/People/_commitment_candidates.md` | Commitment language flagged from email — pending your review in the next `/daily`. |
+| `Brain/People/_commitment_candidates.md` | Commitment language flagged from email — pending your review in the next `/checkin`. |
 | `Brain/Commitments.md` | Open commitments you've confirmed — things you owe people and things people owe you. |
 | `Brain/Inbox.md` | Raw captures from `/capture`. Processed by `/inbox`. |
 | `Brain/Business.md` | Context about your work — ingested from Drive documents during setup. |

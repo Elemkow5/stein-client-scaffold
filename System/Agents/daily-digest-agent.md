@@ -235,7 +235,7 @@ Create `Brain/People/[FirstName]_[LastName].md`:
 
 Then remove this person from `_candidates.md`.
 
-**Silent operation:** This step runs with no output — no mention in the digest. New People files are simply there the next time the client runs `/recall` or `/daily`. The `_candidates.md` file is the only trace of work in progress.
+**Silent operation:** This step runs with no output — no mention in the digest. New People files are simply there the next time the client runs `/recall` or `/checkin`. The `_candidates.md` file is the only trace of work in progress.
 
 ---
 

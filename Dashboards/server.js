@@ -278,7 +278,7 @@ function handleDaily(req, res, query) {
     html += `<div class="digest-empty">
       <div class="digest-empty-icon">☀</div>
       <div class="digest-empty-title">No digest yet for today</div>
-      <div class="digest-empty-sub">Scheduled to run at ${esc(digestTime())}. For it now, open Claude Code and run <code>/daily</code>.</div>
+      <div class="digest-empty-sub">Scheduled to run at ${esc(digestTime())}. For it now, open Claude Code and run <code>/checkin</code>.</div>
     </div>`;
   } else {
     html += `<div class="digest-empty">
@@ -674,7 +674,7 @@ function handleLibrarySkills(req, res) {
     { name: '/capture',  when: 'You have a thought or task mid-session.',     how: '/capture [what]',   does: 'Adds it instantly to Brain/Inbox.md — no friction.' },
     { name: '/inbox',    when: 'Ready to process what\'s accumulated.',        how: '/inbox',            does: 'Works through Inbox.md one item at a time, filing each.' },
     { name: '/checkin',  when: 'Start of a day, week, or quarter.',           how: '/checkin',          does: 'Daily: calendar + priorities. Weekly: goals + top 3. Quarterly: full review.' },
-    { name: '/daily',    when: 'Morning planning session.',                    how: '/daily',            does: 'Calendar, emails, priorities, tasks — the one thing that matters today.' },
+    
     { name: '/wrap',     when: 'End of a session or day.',                     how: '/wrap',             does: 'Logs what got done, captures next steps, checks commitments.' },
     { name: '/recall',   when: 'You want to find something.',                  how: '/recall [topic]',   does: 'Searches Brain/, Goals/, Personality/. Returns ranked matches.' },
     { name: '/plan',     when: 'Before any complex or multi-step work.',       how: '/plan [task]',      does: 'Writes a structured execution plan. Saves to Brain/Plans/. Executes on go.' },

@@ -214,6 +214,49 @@ if [ -n "$LITERAL" ]; then
 fi
 [ "$SKILL_BAD" -eq 0 ] && pass "all skills have frontmatter and portable tool names"
 
+# ── 7b. No references to retired skills ──────────────────────────────────────
+head_ "7b. No references to retired commands"
+
+# /checkin replaced /daily, /weekly and /quarterly. A doc or skill still telling
+# the client to run a command that no longer exists is the exact drift that made
+# the original mess: one layer changed, the rest kept pointing at the old thing.
+python3 - "$ROOT" <<'PY' || FAILED=$((FAILED+1))
+import os, re, sys
+root = sys.argv[1]
+retired = ["daily", "weekly", "quarterly", "planning"]
+live = {d for d in os.listdir(os.path.join(root, ".claude/skills"))
+        if os.path.isdir(os.path.join(root, ".claude/skills", d))}
+targets = []
+for rel in [".claude/skills", ".claude/CLAUDE.md", "System/Docs", "System/Setup",
+            "System/Agents", "README.md", "Deployment_Checklist.md"]:
+    p = os.path.join(root, rel)
+    if os.path.isfile(p): targets.append(p)
+    for dp, _, fns in os.walk(p):
+        targets += [os.path.join(dp, f) for f in fns if f.endswith(".md")]
+
+bad = []
+for cmd in retired:
+    if cmd in live:            # still a real skill — not retired
+        continue
+    # A slash COMMAND: /cmd not preceded by a path or word char, not followed by
+    # one. Excludes Agents/weekly-health-report.md and Brain/Daily/.
+    pat = re.compile(r'(?<![\w/-])/' + cmd + r'(?![\w/-])')
+    for f in set(targets):
+        try: txt = open(f, encoding="utf-8").read()
+        except Exception: continue
+        for i, line in enumerate(txt.split("\n"), 1):
+            if pat.search(line):
+                bad.append((cmd, os.path.relpath(f, root), i, line.strip()[:100]))
+
+if bad:
+    print("  \033[0;31m✗\033[0m references to retired commands (/checkin replaced these):")
+    for cmd, f, i, line in bad[:10]:
+        print(f"      /{cmd} — {f}:{i}")
+        print(f"        {line}")
+    sys.exit(1)
+print("  \033[0;32m✓\033[0m no references to retired commands")
+PY
+
 # ── 8. A fresh deploy produces a working vault ───────────────────────────────
 head_ "8. Dry-run deploy into a temp folder"
 
