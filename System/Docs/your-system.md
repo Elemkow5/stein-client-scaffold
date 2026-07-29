@@ -42,13 +42,11 @@ Who you are and how you work. Claude reads these to give you relevant context, w
 
 ---
 
-## Planning/
-
-Session history and session context.
+## Session history
 
 | File / Folder | What it is |
 |---|---|
-| `Planning/Sessions/` | One file per session. Permanent searchable record of every conversation, decision, and insight. `/recall` searches here. |
+| `Brain/Session_Logs/` | One file per session. Permanent searchable record of every conversation, decision, and insight. `/recall` searches here. |
 
 ---
 
@@ -88,7 +86,7 @@ The dashboard is read-only — it's a view into your vault, not a way to edit it
 - `Brain/People/_commitment_candidates.md` — commitment flags
 - `Brain/Inbox.md` — captures from `/capture`
 - `Brain/Daily/` — morning brief archives
-- `Planning/Sessions/` — session logs
+- `Brain/Session_Logs/` — session logs
 - `Personality/` files — during setup and when you run `/update`
 
 **Claude never overwrites:**
@@ -102,7 +100,7 @@ The dashboard is read-only — it's a view into your vault, not a way to edit it
 
 1. **Run `/recall [what you're looking for]`** — searches everything
 2. **Check `Brain/Daily/[date].md`** — if it happened on a specific day, the brief from that morning has it
-3. **Check `Planning/Sessions/`** — if it came up in a conversation, it's in a session log
+3. **Check `Brain/Session_Logs/`** — if it came up in a conversation, it's in a session log
 4. **Open the Dashboard** at localhost:7272 — Sessions tab has full-text search
 
 ---

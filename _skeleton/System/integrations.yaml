@@ -1,8 +1,9 @@
 # integrations.yaml — Platform & Service Config
 #
-# Set during /setup. Read by /checkin, /goal, /lets-go, /comms-triage,
-# /stein-doctor, /seed, /setup-transcript, the daily digest agent, the weekly
-# health report, inbox-watcher.js, and the dashboard.
+# Set during /setup. Read by /checkin, /goal, /lets-go, /seed,
+# /setup-transcript, the daily digest agent, the weekly health report,
+# inbox-watcher.js, and the dashboard — plus /comms-triage (Communications Hub
+# pack) and /stein-doctor (Power User pack) where those are installed.
 #
 # ⚠️ THE SHAPE OF THIS FILE IS A CONTRACT.
 # Eleven consumers read `services.*`, `comms_hub.*`, `inbox_folder.*` and
@@ -76,7 +77,8 @@ comms_hub:
     email:
       enabled: false
       # Platform-matched to services.email.provider above — no separate MCP needed.
-      # Enable this when services.email is connected and client uses /comms-triage.
+      # Enable this when services.email is connected and the Communications Hub
+      # pack is installed (Packs/comms-hub/install.sh sets comms_hub.enabled itself).
 
     slack:
       enabled: false

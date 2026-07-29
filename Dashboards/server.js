@@ -670,15 +670,20 @@ function handleLibraryKnowledge(req, res, query) {
 // ── Library: Skills ───────────────────────────────────────────────────────────
 
 function handleLibrarySkills(req, res) {
+  // The base ten. Anything added from a Pack is deliberately not listed here —
+  // see Packs/*/README.md. Keep this in sync with System/Docs/your-commands.md
+  // and the BASE_SKILLS list in System/Scripts/verify.sh.
   const defs = [
-    { name: '/capture',  when: 'You have a thought or task mid-session.',     how: '/capture [what]',   does: 'Adds it instantly to Brain/Inbox.md — no friction.' },
-    { name: '/inbox',    when: 'Ready to process what\'s accumulated.',        how: '/inbox',            does: 'Works through Inbox.md one item at a time, filing each.' },
-    { name: '/checkin',  when: 'Start of a day, week, or quarter.',           how: '/checkin',          does: 'Daily: calendar + priorities. Weekly: goals + top 3. Quarterly: full review.' },
-    
-    { name: '/wrap',     when: 'End of a session or day.',                     how: '/wrap',             does: 'Logs what got done, captures next steps, checks commitments.' },
-    { name: '/recall',   when: 'You want to find something.',                  how: '/recall [topic]',   does: 'Searches Brain/, Goals/, Personality/. Returns ranked matches.' },
-    { name: '/plan',     when: 'Before any complex or multi-step work.',       how: '/plan [task]',      does: 'Writes a structured execution plan. Saves to Brain/Plans/. Executes on go.' },
-    { name: '/goal',     when: 'Setting a new goal.',                          how: '/goal',             does: 'Full goal session — framing, milestones, tasks. Syncs to calendar and Master.md.' },
+    { name: '/checkin',    when: 'Start of a day, week, or quarter.',          how: '/checkin',           does: 'Daily: calendar + priorities. Weekly: goals + top 3. Quarterly: full review.' },
+    { name: '/capture',    when: 'You have a thought or task mid-session.',    how: '/capture [what]',    does: 'Adds it instantly to Brain/Inbox.md — no friction.' },
+    { name: '/recall',     when: 'You want to find something.',                how: '/recall [topic]',    does: 'Searches Brain/, Goals/, Personality/. Returns ranked matches.' },
+    { name: '/inbox',      when: 'Ready to process what\'s accumulated.',       how: '/inbox',             does: 'Works through Inbox.md one item at a time, filing each.' },
+    { name: '/wrap',       when: 'End of a session or day.',                    how: '/wrap',              does: 'Logs what got done, captures next steps, checks commitments.' },
+    { name: '/brief',      when: 'Before an important call or meeting.',        how: '/brief [who]',       does: 'Last conversation, open items, what you owe them. Flags cold relationships.' },
+    { name: '/debrief',    when: 'Right after that meeting.',                   how: '/debrief',           does: 'Extracts decisions and commitments, updates their People file, logs it.' },
+    { name: '/commitment', when: 'You promised someone something.',             how: '/commitment',        does: 'Logs what, to whom, by when — to the ledger, the board, and their file.' },
+    { name: '/goal',       when: 'Setting a new goal.',                         how: '/goal',              does: 'Full goal session — framing, milestones, tasks. Syncs to calendar and Master.md.' },
+    { name: '/plan',       when: 'Before any complex or multi-step work.',      how: '/plan [task]',       does: 'Writes a structured execution plan. Saves to Brain/Plans/. Executes on go.' },
   ];
 
   const html = `<div class="skills-grid">${defs.map(s => `

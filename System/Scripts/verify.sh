@@ -257,6 +257,96 @@ if bad:
 print("  \033[0;32m✓\033[0m no references to retired commands")
 PY
 
+# ── 7c. The base layer is exactly the declared set ───────────────────────────
+head_ "7c. Base skill layer matches the manifest"
+
+# WHY: on 2026-07-20 the base layer was scoped at 9 client commands. By
+# 2026-07-29 .claude/skills/ held 24 — /brief, /debrief, /stein-doctor and
+# others were built later and dropped straight into base, and /comms-triage
+# and /comms-reply stayed there for three weeks after being scoped OUT to
+# Module 15. Nobody re-scoped the layer because nothing checked it.
+#
+# This is that check. Adding a skill to the base layer is now a deliberate act:
+# add it to BASE_SKILLS below, or ship it in Packs/.
+#
+# Keep in sync with: System/Docs/your-commands.md, Dashboards/server.js
+# (handleLibrarySkills), Projects/AI_Agency/Stein_for_Clients/Scaffold.md.
+
+# The ten commands a client gets on day one.
+BASE_SKILLS="brief capture checkin commitment debrief goal inbox plan recall wrap"
+
+# Not client commands — onboarding and operator machinery. Present in the repo,
+# absent from the client's docs, run by Andrew (or once, at install).
+MACHINERY_SKILLS="setup import-setup seed lets-go setup-transcript update"
+
+ALLOWED="$BASE_SKILLS $MACHINERY_SKILLS"
+MANIFEST_BAD=0
+
+for d in "$ROOT/.claude/skills"/*/; do
+  [ -d "$d" ] || continue
+  n=$(basename "$d")
+  case " $ALLOWED " in
+    *" $n "*) ;;
+    *) fail "'/$n' is in the base layer but not in the manifest — add it to BASE_SKILLS or move it to Packs/"
+       MANIFEST_BAD=1 ;;
+  esac
+done
+
+for n in $ALLOWED; do
+  [ -d "$ROOT/.claude/skills/$n" ] || {
+    fail "'/$n' is in the manifest but missing from .claude/skills/"
+    MANIFEST_BAD=1
+  }
+done
+
+# A skill must live in exactly one place. Shipping the same command in base and
+# in a pack means the pack installer silently no-ops and the two copies drift.
+if [ -d "$ROOT/Packs" ]; then
+  while IFS= read -r pskill; do
+    [ -z "$pskill" ] && continue
+    pn=$(basename "$pskill")
+    if [ -d "$ROOT/.claude/skills/$pn" ]; then
+      fail "'/$pn' exists in BOTH the base layer and $(dirname "${pskill#$ROOT/}") — pick one"
+      MANIFEST_BAD=1
+    fi
+  done < <(find "$ROOT/Packs" -type d -path '*/.claude/skills/*' -depth 4 2>/dev/null)
+fi
+
+# Every pack must be installable and documented.
+if [ -d "$ROOT/Packs" ]; then
+  for p in "$ROOT/Packs"/*/; do
+    [ -d "$p" ] || continue
+    pname=$(basename "$p")
+    [ -f "$p/install.sh" ] || { fail "Packs/$pname has no install.sh"; MANIFEST_BAD=1; }
+    [ -f "$p/README.md" ] || { fail "Packs/$pname has no README.md"; MANIFEST_BAD=1; }
+  done
+fi
+
+if [ "$MANIFEST_BAD" -eq 0 ]; then
+  BASE_N=$(echo "$BASE_SKILLS" | wc -w | tr -d ' ')
+  PACK_N=$(find "$ROOT/Packs" -type d -path '*/.claude/skills/*' -depth 4 2>/dev/null | wc -l | tr -d ' ')
+  pass "$BASE_N base + $(echo "$MACHINERY_SKILLS" | wc -w | tr -d ' ') machinery in base layer, $PACK_N in packs, no overlap"
+fi
+
+# The client's command doc must document the base layer and nothing else —
+# a doc that teaches a command the client doesn't have is the same bug.
+DOC="$ROOT/System/Docs/your-commands.md"
+if [ -f "$DOC" ]; then
+  DOC_BAD=0
+  for n in $BASE_SKILLS; do
+    grep -q -- "\`/$n\`" "$DOC" || { fail "your-commands.md does not document base command /$n"; DOC_BAD=1; }
+  done
+  while IFS= read -r pskill; do
+    [ -z "$pskill" ] && continue
+    pn=$(basename "$pskill")
+    if grep -q -- "^### \`/$pn\`" "$DOC"; then
+      fail "your-commands.md documents /$pn, which now ships in a pack — the client won't have it"
+      DOC_BAD=1
+    fi
+  done < <(find "$ROOT/Packs" -type d -path '*/.claude/skills/*' -depth 4 2>/dev/null)
+  [ "$DOC_BAD" -eq 0 ] && pass "your-commands.md documents the base layer and no pack commands"
+fi
+
 # ── 8. A fresh deploy produces a working vault ───────────────────────────────
 head_ "8. Dry-run deploy into a temp folder"
 
