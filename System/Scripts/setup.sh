@@ -44,10 +44,11 @@ header "2. Vault Location"
 echo "  Where should the vault live?"
 echo "  1) iCloud Drive (recommended for Mac)"
 echo "  2) Google Drive for Desktop"
-echo "  3) Desktop"
-echo "  4) Documents"
-echo "  5) Custom path"
-read -rp "  Choice [1-5]: " LOCATION_CHOICE
+echo "  3) Microsoft OneDrive"
+echo "  4) Desktop"
+echo "  5) Documents"
+echo "  6) Custom path"
+read -rp "  Choice [1-6]: " LOCATION_CHOICE
 
 case "$LOCATION_CHOICE" in
   1)
@@ -69,14 +70,34 @@ case "$LOCATION_CHOICE" in
     fi
     ;;
   3)
+    # OneDrive can mount as Personal, Business, or a company-named folder —
+    # check CloudStorage (current macOS location) first, then the legacy
+    # top-level ~/OneDrive* naming from older OneDrive versions.
+    ONEDRIVE="$(ls -d "$HOME/Library/CloudStorage/OneDrive-"* 2>/dev/null | head -1)"
+    if [ -n "$ONEDRIVE" ] && [ -d "$ONEDRIVE" ]; then
+      VAULT_DIR="${ONEDRIVE}/${CLIENT_NAME}_AI"
+    elif [ -d "$HOME/OneDrive" ]; then
+      VAULT_DIR="$HOME/OneDrive/${CLIENT_NAME}_AI"
+    else
+      LEGACY_ONEDRIVE="$(ls -d "$HOME/OneDrive - "* 2>/dev/null | head -1)"
+      if [ -n "$LEGACY_ONEDRIVE" ] && [ -d "$LEGACY_ONEDRIVE" ]; then
+        VAULT_DIR="${LEGACY_ONEDRIVE}/${CLIENT_NAME}_AI"
+      else
+        warn "OneDrive not found at expected path."
+        read -rp "  Enter OneDrive folder path: " ONEDRIVE
+        VAULT_DIR="${ONEDRIVE}/${CLIENT_NAME}_AI"
+      fi
+    fi
+    ;;
+  4)
     VAULT_DIR="$HOME/Desktop/${CLIENT_NAME}_AI"
     warn "Desktop doesn't sync or back up automatically unless you've set that up separately — worth a heads-up to the client."
     ;;
-  4)
+  5)
     VAULT_DIR="$HOME/Documents/${CLIENT_NAME}_AI"
     warn "Documents doesn't sync or back up automatically unless you've set that up separately — worth a heads-up to the client."
     ;;
-  5)
+  6)
     read -rp "  Full path for vault folder: " VAULT_DIR
     ;;
   *)
