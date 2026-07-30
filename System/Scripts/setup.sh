@@ -44,8 +44,10 @@ header "2. Vault Location"
 echo "  Where should the vault live?"
 echo "  1) iCloud Drive (recommended for Mac)"
 echo "  2) Google Drive for Desktop"
-echo "  3) Custom path"
-read -rp "  Choice [1/2/3]: " LOCATION_CHOICE
+echo "  3) Desktop"
+echo "  4) Documents"
+echo "  5) Custom path"
+read -rp "  Choice [1-5]: " LOCATION_CHOICE
 
 case "$LOCATION_CHOICE" in
   1)
@@ -67,6 +69,14 @@ case "$LOCATION_CHOICE" in
     fi
     ;;
   3)
+    VAULT_DIR="$HOME/Desktop/${CLIENT_NAME}_AI"
+    warn "Desktop doesn't sync or back up automatically unless you've set that up separately — worth a heads-up to the client."
+    ;;
+  4)
+    VAULT_DIR="$HOME/Documents/${CLIENT_NAME}_AI"
+    warn "Documents doesn't sync or back up automatically unless you've set that up separately — worth a heads-up to the client."
+    ;;
+  5)
     read -rp "  Full path for vault folder: " VAULT_DIR
     ;;
   *)
